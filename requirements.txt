@@ -1,0 +1,29 @@
+# STT core: local offline Whisper inference.
+faster-whisper>=1.0.0,<2.0.0
+
+# Microphone input. Uses prebuilt PortAudio wheels on Windows.
+sounddevice>=0.4.6,<0.5.0
+
+# Audio buffer and PCM format conversion.
+numpy>=1.24.0,<2.0.0
+
+# Silero VAD runtime. Install CPU wheels; CUDA is not required.
+torch>=2.2.0,<3.0.0
+torchaudio>=2.2.0,<3.0.0
+silero-vad>=6.0.0,<7.0.0
+
+# YAML config files.
+PyYAML>=6.0.1,<7.0.0
+
+# Traditional-to-simplified Chinese conversion (pure Python, no C compile needed).
+zhconv>=1.4.0,<2.0.0
+
+# Modern desktop GUI framework.
+PySide6>=6.6.0,<7.0.0
+
+# Font parsing — TTF/OTC glyph outline extraction.
+fonttools>=4.50.0,<5.0.0
+
+# Glyph skeletonization — closed outline → single-line stroke extraction.
+scikit-image>=0.22.0,<1.0.0
+Pillow>=10.0.0,<12.0.0

@@ -1,0 +1,210 @@
+/* ========== Global ========== */
+QMainWindow {
+    background-color: #F5F6FA;
+}
+
+QWidget#centralWidget {
+    background-color: #F5F6FA;
+}
+
+/* ========== Control Bar ========== */
+QFrame#controlBar {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #E0E4EA;
+    border-radius: 0px;
+    padding: 16px 24px;
+}
+
+QLabel#titleLabel {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A1C2E;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+/* Status indicator */
+QLabel#statusDot {
+    min-width: 10px;
+    min-height: 10px;
+    max-width: 10px;
+    max-height: 10px;
+    border-radius: 5px;
+}
+
+QLabel#statusText {
+    font-size: 13px;
+    color: #6B7280;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+/* ========== Buttons ========== */
+QPushButton#primaryBtn {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+QPushButton#primaryBtn:hover {
+    background-color: #2563EB;
+}
+
+QPushButton#primaryBtn:pressed {
+    background-color: #1D4ED8;
+}
+
+QPushButton#primaryBtn:disabled {
+    background-color: #93C5FD;
+}
+
+QPushButton#secondaryBtn {
+    background-color: #F3F4F6;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+QPushButton#secondaryBtn:hover {
+    background-color: #E5E7EB;
+    border-color: #9CA3AF;
+}
+
+QPushButton#secondaryBtn:pressed {
+    background-color: #D1D5DB;
+}
+
+QPushButton#secondaryBtn:disabled {
+    color: #9CA3AF;
+    border-color: #E5E7EB;
+}
+
+/* ========== Result Panel ========== */
+QFrame#resultPanel {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E4EA;
+    border-radius: 8px;
+    margin: 0px 24px;
+}
+
+QTextEdit#resultArea {
+    border: none;
+    background-color: transparent;
+    font-size: 15px;
+    color: #1F2937;
+    font-family: "Microsoft YaHei", "KaiTi", "SimSun", serif;
+    padding: 16px;
+    selection-background-color: #DBEAFE;
+}
+
+/* ========== Simulator Widget ========== */
+QFrame#simulatorWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E4EA;
+    border-radius: 8px;
+    margin: 0px 24px;
+}
+
+/* Level meter */
+QProgressBar#levelMeter {
+    background-color: #E5E7EB;
+    border: none;
+    border-radius: 4px;
+}
+
+QProgressBar#levelMeter::chunk {
+    background-color: #3B82F6;
+    border-radius: 4px;
+}
+/* Hotwords input */
+QLineEdit#hotwordsInput {
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #374151;
+    background-color: #FFFFFF;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+QLineEdit#hotwordsInput:focus {
+    border-color: #3B82F6;
+}
+
+QComboBox#trajectorySourceCombo {
+    min-width: 150px;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    padding: 5px 8px;
+    color: #374151;
+    background-color: #FFFFFF;
+    font-size: 12px;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+QComboBox#trajectorySourceCombo:focus {
+    border-color: #3B82F6;
+}
+
+/* ========== Tab Widget (result panel tabs) ========== */
+QTabWidget#resultTabs::pane {
+    border: none;
+    background-color: #FFFFFF;
+}
+
+QTabBar::tab {
+    background-color: #F3F4F6;
+    color: #6B7280;
+    border: 1px solid #D1D5DB;
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    background-color: #FFFFFF;
+    color: #1F2937;
+    border-bottom: 2px solid #3B82F6;
+}
+
+QTabBar::tab:hover:!selected {
+    background-color: #E5E7EB;
+}
+
+/* ========== Glyph preview canvas ========== */
+QFrame#previewCanvas {
+    background-color: #FAFBFC;
+    border: 1px solid #E0E4EA;
+    border-radius: 4px;
+}
+
+QFrame#bottomBar {
+    background-color: #FFFFFF;
+    border-top: 1px solid #E0E4EA;
+    border-radius: 0px;
+    padding: 8px 24px;
+    min-height: 36px;
+}
+
+QLabel#barLabel {
+    font-size: 12px;
+    color: #9CA3AF;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+
+QLabel#barValue {
+    font-size: 12px;
+    color: #4B5563;
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+}

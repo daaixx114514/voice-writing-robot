@@ -1,0 +1,1 @@
+- [Glyph module implementation](memory/glyph-module-implementation.md) — 轨迹生成 + 运动控制 + G-code + GUI 全栈实现（2026-08-11）

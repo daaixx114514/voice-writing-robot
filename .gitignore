@@ -1,0 +1,32 @@
+# Python bytecode and tooling caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environments and secrets
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local runtime and browser artifacts
+.playwright-cli/
+output/
+
+# Local model caches and downloads
+*.onnx
+*.bin
+*.pt
+*.pth
+

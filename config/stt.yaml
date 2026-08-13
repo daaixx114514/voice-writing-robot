@@ -1,0 +1,26 @@
+audio:
+  sample_rate: 16000
+  channels: 1
+  block_size: 512
+  speech_threshold: 0.3
+  start_padding_ms: 300
+  silence_duration_ms: 1200
+  min_speech_duration_ms: 400
+  max_record_seconds: 20
+  device: null
+
+stt:
+  # Windows 11 + Intel i5-12450H + no dedicated GPU:
+  # keep CPU/int8 as the default for stable offline recognition.
+  model_size: small
+  device: cpu
+  compute_type: int8
+  language: zh
+  beam_size: 5
+  best_of: 2
+  temperature: [0.0, 0.2, 0.4]
+  repetition_penalty: 1.1
+  no_speech_threshold: 0.6
+  compression_ratio_threshold: 2.4
+  cpu_threads: 4
+  initial_prompt: "以下是中文语音识别。说话内容可能包含中国人名、地名、机构名称和专业术语。请使用常见姓名用字，如：伟、芳、建国、志强、小明、秀英、李明、王红、张华、刘洋、陈静、赵刚、孙丽、周杰、吴鑫。一律输出简体中文。"
