@@ -1,5 +1,7 @@
 # Voice Writing Robot - Speech Recognition Module
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 This module is designed for Windows 11, Python 3.10/3.11, Intel i5-12450H, and no dedicated GPU.
 
 Default runtime:
