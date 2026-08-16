@@ -48,6 +48,10 @@ class GlyphPreviewWidget(QWidget):
         self._canvas.clear()
         self._font_label.setText("暂无轨迹")
 
+    def set_grid_visible(self, visible: bool) -> None:
+        """Show or hide the millimeter guide grid."""
+        self._canvas.set_show_grid(visible)
+
     # ── UI ──────────────────────────────────────────────────────────────
 
     def _build_ui(self) -> None:

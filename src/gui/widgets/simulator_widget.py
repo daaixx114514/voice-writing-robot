@@ -18,11 +18,11 @@ from src.trajectory.simulator import VirtualPlotter
 
 
 # Colour palette
-PAGE_BG = QColor("#ffffff")
-GRID_COLOR = QColor("#e8e8e8")
-DRAW_COLOR = QColor("#1a1a2e")
-PEN_COLOR = QColor("#ef4444")
-PEN_UP_COLOR = QColor("#f59e0b")
+PAGE_BG = QColor("#E9DECA")
+GRID_COLOR = QColor("#D3C3A8")
+DRAW_COLOR = QColor("#A84438")
+PEN_COLOR = QColor("#E85D4A")
+PEN_UP_COLOR = QColor("#D1A65A")
 
 
 class SimulatorWidget(QFrame):
@@ -39,6 +39,8 @@ class SimulatorWidget(QFrame):
         self._offset_x = 20.0
         self._offset_y = 20.0
         self._speed_factor = 1.0
+        self._show_grid = True
+        self._auto_play = True
 
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._tick)
@@ -58,20 +60,20 @@ class SimulatorWidget(QFrame):
         toolbar = QHBoxLayout()
         toolbar.setSpacing(6)
 
-        self.play_btn = QPushButton("Play")
+        self.play_btn = QPushButton("播放")
         self.play_btn.setObjectName("primaryBtn")
         self.play_btn.setCursor(Qt.PointingHandCursor)
         self.play_btn.clicked.connect(self._on_play)
         toolbar.addWidget(self.play_btn)
 
-        self.pause_btn = QPushButton("Pause")
+        self.pause_btn = QPushButton("暂停")
         self.pause_btn.setObjectName("secondaryBtn")
         self.pause_btn.setCursor(Qt.PointingHandCursor)
         self.pause_btn.setEnabled(False)
         self.pause_btn.clicked.connect(self._on_pause)
         toolbar.addWidget(self.pause_btn)
 
-        self.stop_btn = QPushButton("Stop")
+        self.stop_btn = QPushButton("停止")
         self.stop_btn.setObjectName("secondaryBtn")
         self.stop_btn.setCursor(Qt.PointingHandCursor)
         self.stop_btn.setEnabled(False)
@@ -80,7 +82,7 @@ class SimulatorWidget(QFrame):
 
         toolbar.addSpacing(12)
 
-        speed_label = QLabel("Speed:")
+        speed_label = QLabel("速度")
         speed_label.setObjectName("barLabel")
         toolbar.addWidget(speed_label)
 
@@ -98,7 +100,7 @@ class SimulatorWidget(QFrame):
 
         toolbar.addStretch()
 
-        fit_btn = QPushButton("Fit")
+        fit_btn = QPushButton("适应画布")
         fit_btn.setObjectName("secondaryBtn")
         fit_btn.setCursor(Qt.PointingHandCursor)
         fit_btn.setToolTip("Fit to view")
@@ -157,8 +159,17 @@ class SimulatorWidget(QFrame):
         self._canvas.zoom_fit()
         self._canvas.update()
         self._update_progress()
-        # Auto-start so user sees the simulation immediately.
-        self._on_play()
+        if self._auto_play:
+            self._on_play()
+
+    def set_grid_visible(self, visible: bool) -> None:
+        """Show or hide the simulation work-area grid."""
+        self._show_grid = visible
+        self._canvas.update()
+
+    def set_auto_play(self, enabled: bool) -> None:
+        """Choose whether a newly generated simulation starts immediately."""
+        self._auto_play = enabled
 
     def reset(self):
         self._on_stop()
@@ -356,7 +367,7 @@ class _PlotterCanvas(QFrame):
         super().paintEvent(event)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.fillRect(self.rect(), QBrush(QColor("#f5f5f5")))
+        painter.fillRect(self.rect(), QBrush(QColor("#152434")))
 
         cfg = self._plotter._cfg
         ww, wh = cfg.work_width_mm, cfg.work_height_mm
@@ -376,7 +387,7 @@ class _PlotterCanvas(QFrame):
 
         # Grid.
         grid_spacing = 10.0 * scale
-        if grid_spacing >= 20:
+        if self.parent()._show_grid and grid_spacing >= 20:
             painter.save()
             painter.setClipRect(page_rect)
             painter.setPen(QPen(GRID_COLOR, 0.5))

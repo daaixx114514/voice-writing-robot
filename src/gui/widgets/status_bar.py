@@ -22,17 +22,17 @@ class StatusBar(QFrame):
         layout.setSpacing(24)
 
         # Model name
-        self._add_item(layout, "Model", "")
+        self._add_item(layout, "识别模型", "")
         self.model_value = self._last_value(layout)
 
         # Elapsed time
-        self._add_item(layout, "Duration", "0.00 s")
+        self._add_item(layout, "耗时", "0.00 s")
         self.elapsed_value = self._last_value(layout)
 
         layout.addStretch()
 
         # Serial status (reserved)
-        self._add_item(layout, "Serial", "Disconnected")
+        self._add_item(layout, "机器人连接", "未连接")
         self.serial_value = self._last_value(layout)
 
     @staticmethod

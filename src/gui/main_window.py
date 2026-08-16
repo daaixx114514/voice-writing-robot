@@ -7,7 +7,7 @@ import threading
 import time
 from pathlib import Path
 
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QHBoxLayout, QMainWindow, QMessageBox, QVBoxLayout, QWidget
 
 from src.audio.audio_recorder import AudioRecorder
 from src.glyph import (
@@ -24,8 +24,9 @@ from src.gui.widgets.control_bar import ControlBar
 from src.gui.widgets.result_panel import ResultPanel
 from src.gui.widgets.simulator_widget import SimulatorWidget
 from src.gui.widgets.status_bar import StatusBar
+from src.gui.widgets.toast import ToastNotification
 from src.stt.speech_recognizer import SpeechRecognizer
-from src.utils.config import load_audio_config, load_stt_config
+from src.utils.config import load_audio_config, load_stt_config, resource_path
 from src.trajectory.config import MotionConfig
 from src.trajectory.coordinate import CoordinateTransformer
 from src.trajectory.motion import trajectory_to_commands
@@ -59,27 +60,38 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------
 
     def _build_ui(self) -> None:
-        self.setWindowTitle("Voice Writing Robot")
-        self.resize(900, 600)
-        self.setMinimumSize(640, 420)
+        self.setWindowTitle("声写机器人 · Voice Writing Robot")
+        self.resize(1180, 760)
+        self.setMinimumSize(960, 640)
 
         central = QWidget()
         central.setObjectName("centralWidget")
         self.setCentralWidget(central)
+        self._toast = ToastNotification(central)
 
         layout = QVBoxLayout(central)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
+        body = QHBoxLayout()
+        body.setContentsMargins(0, 0, 0, 0)
+        body.setSpacing(0)
         self.control_bar = ControlBar(self._state)
-        layout.addWidget(self.control_bar)
+        body.addWidget(self.control_bar)
 
+        workspace = QFrame()
+        workspace.setObjectName("workspace")
+        workspace_layout = QVBoxLayout(workspace)
+        workspace_layout.setContentsMargins(22, 22, 22, 18)
+        workspace_layout.setSpacing(14)
         self.result_panel = ResultPanel(self._state)
-        layout.addWidget(self.result_panel, stretch=1)
+        workspace_layout.addWidget(self.result_panel, stretch=3)
 
         self.simulator_widget = SimulatorWidget()
-        self.simulator_widget.setMaximumHeight(300)
-        layout.addWidget(self.simulator_widget)
+        self.simulator_widget.setMinimumHeight(250)
+        workspace_layout.addWidget(self.simulator_widget, stretch=2)
+        body.addWidget(workspace, 1)
+        layout.addLayout(body, 1)
 
         self.bottom_bar = StatusBar(self._state)
         layout.addWidget(self.bottom_bar)
@@ -97,27 +109,43 @@ class MainWindow(QMainWindow):
         self.control_bar.trajectory_source_combo.currentIndexChanged.connect(
             self._on_trajectory_source_changed
         )
+        self.control_bar.show_grid_toggle.toggled.connect(self._set_grid_visible)
+        self.control_bar.auto_simulate_toggle.toggled.connect(
+            self.simulator_widget.set_auto_play
+        )
         self._state.status_message.connect(self._on_status_message)
         self._state.elapsed_updated.connect(self.bottom_bar.elapsed_value.setText)
+        self._set_grid_visible(self.control_bar.show_grid_toggle.isChecked())
+        self.simulator_widget.set_auto_play(self.control_bar.auto_simulate)
 
     # ------------------------------------------------------------------
     # Model loading
     # ------------------------------------------------------------------
 
     def _load_models(self) -> None:
+        config_path = resource_path("config/stt.yaml")
         try:
-            config_path = Path("config/stt.yaml")
             audio_cfg = load_audio_config(config_path)
             stt_cfg = load_stt_config(config_path)
+        except Exception as exc:
+            QMessageBox.critical(self, "配置错误", f"无法读取配置文件：\n{exc}")
+            self._init_glyph_engine()
+            return
+
+        try:
             self._recorder = AudioRecorder(audio_cfg)
+        except Exception as exc:
+            self._recorder = None
+            self._state.emit_status(f"录音模块不可用：{exc}")
+
+        try:
             self._recognizer = SpeechRecognizer(stt_cfg)
             self.set_model_info(f"faster-whisper {stt_cfg.model_size}")
-
-            # Lazy-init glyph engine — will be created on first preview.
-            self._init_glyph_engine()
-
         except Exception as exc:
-            QMessageBox.critical(self, "Error", f"Failed to load models:\n{exc}")
+            self._recognizer = None
+            self._state.emit_status(f"语音识别模块不可用：{exc}")
+
+        self._init_glyph_engine()
 
     def _init_glyph_engine(self) -> None:
         """Initialize glyph layout engine with preferred Chinese font.
@@ -174,6 +202,7 @@ class MainWindow(QMainWindow):
 
     def _on_start(self) -> None:
         if self._recorder is None or self._recognizer is None:
+            self._state.emit_status("录音模块尚未就绪，请检查 VAD 模型或语音识别模型")
             return
         device_idx = self.control_bar.device_index
         if device_idx is not None:
@@ -275,10 +304,22 @@ class MainWindow(QMainWindow):
         self._debug = flag
 
     def _on_status_message(self, msg: str) -> None:
-        # Status updates flow directly from AppState signal to ControlBar
-        # (connected in ControlBar._connect_signals).  This slot is a
-        # deliberate no-op — re-emitting here would create a signal loop.
-        pass
+        normalized = msg.lower()
+        if any(token in normalized for token in ("error", "failed", "不可用", "失败")):
+            self._toast.show_message(msg, "error")
+        elif any(token in normalized for token in ("copied", "已复制", "已清空")):
+            self._toast.show_message(msg, "success")
+        elif any(token in normalized for token in ("preview", "simulation", "changed", "轨迹")):
+            self._toast.show_message(msg, "info")
+
+    def _set_grid_visible(self, visible: bool) -> None:
+        self.result_panel.set_grid_visible(visible)
+        self.simulator_widget.set_grid_visible(visible)
+
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        if hasattr(self, "_toast"):
+            self._toast.reposition()
 
     # ------------------------------------------------------------------
     # Background thread

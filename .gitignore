@@ -23,10 +23,11 @@ Thumbs.db
 # Local runtime and browser artifacts
 .playwright-cli/
 output/
+build/
+dist/
 
 # Local model caches and downloads
 *.onnx
 *.bin
 *.pt
 *.pth
-

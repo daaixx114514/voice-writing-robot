@@ -1,12 +1,19 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 from typing import Any
 
 import yaml
 
 from src.audio.audio_recorder import AudioConfig
 from src.stt.speech_recognizer import SttConfig
+
+
+def resource_path(relative_path: str | Path) -> Path:
+    """Resolve a project resource in source runs and PyInstaller bundles."""
+    bundle_root = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
+    return bundle_root / Path(relative_path)
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:

@@ -22,11 +22,11 @@ from src.glyph.trajectory import GlyphPath, Point2D, WritingTrajectory
 
 # ── colour palette ──────────────────────────────────────────────────────
 
-PEN_COLOUR = QColor("#333333")
-PEN_UP_COLOUR = QColor("#cccccc")
-PAGE_BG = QColor("#ffffff")
-GRID_COLOUR = QColor("#e8e8e8")
-MARGIN_COLOUR = QColor("#eeeeee")
+PEN_COLOUR = QColor("#9D3E34")
+PEN_UP_COLOUR = QColor("#C5A36C")
+PAGE_BG = QColor("#E9DECA")
+GRID_COLOUR = QColor("#D3C3A8")
+MARGIN_COLOUR = QColor("#C4AF8F")
 
 
 class TrajectoryPreviewWidget(QFrame):
@@ -170,7 +170,7 @@ class TrajectoryPreviewWidget(QFrame):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         # Fill background.
-        painter.fillRect(self.rect(), QBrush(QColor("#f5f5f5")))
+        painter.fillRect(self.rect(), QBrush(QColor("#D7D0C3")))
 
         if self._trajectory is None:
             painter.setPen(Qt.GlobalColor.gray)

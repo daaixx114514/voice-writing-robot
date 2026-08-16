@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import logging
 import sys
-from pathlib import Path
 
 from PySide6.QtWidgets import QApplication
 
 from src.gui.main_window import MainWindow
+from src.utils.config import resource_path
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,10 +19,12 @@ logging.basicConfig(
 
 def run() -> None:
     app = QApplication(sys.argv)
-    app.setApplicationName("Voice Writing Robot")
+    app.setApplicationName("声写机器人")
+    app.setOrganizationName("Voice Writing Robot")
+    app.setStyle("Fusion")
 
     # Load QSS stylesheet
-    qss_path = Path(__file__).parent / "styles" / "style.qss"
+    qss_path = resource_path("src/gui/styles/style.qss")
     if qss_path.exists():
         app.setStyleSheet(qss_path.read_text(encoding="utf-8"))
 

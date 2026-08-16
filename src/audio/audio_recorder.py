@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import collections
+import io
 import logging
 import queue
+import sys
 import threading
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Optional
 
 import numpy as np
@@ -56,7 +59,23 @@ class AudioRecorder:
     def _load_silero_vad() -> torch.nn.Module:
         logger.info("Loading Silero VAD model on CPU...")
         torch.set_num_threads(1)
-        model = load_silero_vad(onnx=False)
+        try:
+            model = load_silero_vad(onnx=False)
+        except (OSError, RuntimeError, ImportError) as exc:
+            bundle_root = Path(getattr(sys, "_MEIPASS", ""))
+            candidates = []
+            if bundle_root:
+                candidates.append(bundle_root / "silero_vad" / "data" / "silero_vad.jit")
+            import silero_vad
+            candidates.append(Path(silero_vad.__file__).resolve().parent / "data" / "silero_vad.jit")
+            model_path = next((path for path in candidates if path.is_file()), None)
+            if model_path is None:
+                raise RuntimeError(f"Silero VAD model file not found; checked: {candidates}") from exc
+            logger.warning("Using explicit Silero VAD resource: %s", model_path)
+            # Torch's Windows file loader can fail on non-ASCII bundle paths.
+            # Reading first and passing a file-like object avoids that path
+            # conversion while keeping the packaged model unchanged.
+            model = torch.jit.load(io.BytesIO(model_path.read_bytes()), map_location="cpu")
         model.eval()
         return model
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import gzip
 import json
 import math
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -23,7 +24,7 @@ class HanziWriterDataError(RuntimeError):
 
 def default_data_path() -> Path:
     return (
-        Path(__file__).resolve().parents[2]
+        Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
         / "data"
         / "hanzi_writer"
         / f"medians-{DATA_VERSION}.json.gz"
